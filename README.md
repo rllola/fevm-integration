@@ -8,20 +8,28 @@ Error
             Backtrace {
                 frames: [
                     Frame {
+                        source: 101,
+                        method: 1,
+                        code: ExitCode {
+                            value: 23,
+                        },
+                        message: "EVM execution error: InvalidMemoryAccess",
+                    },
+                    Frame {
                         source: 1,
                         method: 3,
                         code: ExitCode {
-                            value: 16,
+                            value: 23,
                         },
-                        message: "failed to get actor state",
+                        message: "constructor failed: send to f0101 method 1 aborted with code 23",
                     },
                     Frame {
                         source: 10,
                         method: 3,
                         code: ExitCode {
-                            value: 16,
+                            value: 23,
                         },
-                        message: "send to f01 method 3 aborted with code 16",
+                        message: "send to f01 method 3 aborted with code 23",
                     },
                 ],
                 cause: None,
