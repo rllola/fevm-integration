@@ -16,10 +16,6 @@ use fil_actors_runtime::{EAM_ACTOR_ADDR};
 const WASM_COMPILED_PATH: &str =
 "../build/SimpleCoin.bin";
 
-#[derive(Serialize_tuple, Deserialize_tuple, Clone, Debug)]
-struct State {
-    empty: bool,
-}
 
 #[derive(Serialize_tuple, Deserialize_tuple)]
 pub struct Create2Params {
@@ -33,7 +29,8 @@ fn main() {
     println!("Testing solidity API");
 
     let bs = MemoryBlockstore::default();
-    let bundle_root = bundle::import_bundle(&bs, actors_v10::BUNDLE_CAR).unwrap();
+    let actors = std::fs::read("./builtin-actors-devnet-wasm.car").expect("Unable to read actor devnet file file");
+    let bundle_root = bundle::import_bundle(&bs, &actors).unwrap();
 
     let mut tester =
         Tester::new(NetworkVersion::V18, StateTreeVersion::V5, bundle_root, bs).unwrap();
