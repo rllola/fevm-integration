@@ -2,7 +2,6 @@ build: build_simple_coin
 
 build_simple_coin:
 	./bin/solc contracts/SimpleCoin.sol --output-dir ./build --overwrite --bin --hashes --opcodes --abi
-	xxd -r -p build/SimpleCoin.bin build/SimpleCoin.bin
 
 install_solc_linux:
 	wget https://binaries.soliditylang.org/linux-amd64/solc-linux-amd64-v0.8.15+commit.e14f2714

@@ -42,7 +42,8 @@ fn main() {
     .join(WASM_COMPILED_PATH)
     .canonicalize()
     .unwrap();
-    let evm_bin = std::fs::read(wasm_path).expect("Unable to read file");
+    let evm_hex = std::fs::read(wasm_path).expect("Unable to read file");
+    let evm_bin = hex::decode(evm_hex).unwrap();
 
     let constructor_params = Create2Params {
         initcode: evm_bin,
