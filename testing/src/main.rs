@@ -17,6 +17,10 @@ use cid::Cid;
 use std::str::FromStr;
 use rand_core::OsRng;
 use bls_signatures::Serialize;
+use multihash::Code;
+use fvm_ipld_encoding::CborStore;
+use fvm::state_tree::{ActorState, StateTree};
+use fvm_shared::econ::TokenAmount;
 
 // const WASM_COMPILED_PATH: &str =
 //    "../build/v0.8/MinerAPI.bin";
@@ -52,7 +56,28 @@ fn main() {
     let bls_private_key = bls_signatures::PrivateKey::generate(&mut OsRng);
     let worker = Address::new_bls(&bls_private_key.public_key().as_bytes()).unwrap();
 
-    tester.state_tree.as_mut().unwrap().register_new_address(&worker).unwrap();
+    let state_tree = tester
+        .state_tree
+        .as_mut()
+        .unwrap();
+    let assigned_addr = state_tree.register_new_address(&worker).unwrap();
+    let state = fvm::account_actor::State {
+        address: worker,
+    };
+
+    let cid = state_tree.store().put_cbor(&state, Code::Blake2b256).unwrap();
+
+    let actor_state = ActorState {
+        code: Cid::from_str("bafk2bzaceatwmlp3buf6rcvl323g62wzxbkio2tasl6gxozbjjgcvxxtn3shi").unwrap(),
+        state: cid,
+        sequence: 0,
+        balance: TokenAmount::from_atto(10000),
+        address: Some(worker),
+    };
+
+    state_tree
+        .set_actor(&Address::new_id(assigned_addr), actor_state)
+        .unwrap();
 
     // Instantiate machine
     tester.instantiate_machine(DummyExterns).unwrap();
@@ -64,14 +89,14 @@ fn main() {
     let constructor_params = fil_actor_miner::MinerConstructorParams{
         owner: sender[0].1,
         worker,
-        control_addresses: vec![],
+        control_addresses: vec![sender[0].1],
         window_post_proof_type: fvm_shared::sector::RegisteredPoStProof::StackedDRGWindow2KiBV1,
         peer_id: vec![1, 2, 3],
         multi_addresses: vec![BytesDe(vec![1, 2, 3])],
     };
 
     let exec_params = fil_actor_init::ExecParams{
-        code_cid: Cid::from_str("bafk2bzacec7gj7tiyiaanver7wxj6celzrbjo5f2qcrsattjtffhk32k3cl34").unwrap(),
+        code_cid: Cid::from_str("bafk2bzacebdaxwdyinugsqlxahvufhhw22t7py7wtwzhk4qyrkftbw67tap4g").unwrap(),
         constructor_params: RawBytes::serialize(constructor_params).unwrap(),
     };
 
