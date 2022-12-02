@@ -12,6 +12,8 @@ use fvm::executor::{ApplyKind, Executor};
 use fil_actor_eam::Return;
 use fvm_ipld_encoding::RawBytes;
 use fil_actors_runtime::{EAM_ACTOR_ADDR};
+use fvm_shared::econ::TokenAmount;
+
 
 const WASM_COMPILED_PATH: &str =
 "../build/SimpleCoin.bin";
@@ -75,4 +77,25 @@ fn main() {
     assert_eq!(res.msg_receipt.exit_code.value(), 0);
 
     let exec_return : Return = RawBytes::deserialize(&res.msg_receipt.return_data).unwrap();
+
+    println!("Calling `getbalance`");
+
+    let message = Message {
+        from: sender[0].1,
+        to: Address::new_id(exec_return.actor_id),
+        gas_limit: 1000000000,
+        method_num: 2,
+        sequence: 1,
+        value: TokenAmount::from_atto(1_000),
+        params: RawBytes::new(hex::decode("5864f8b2cb4f000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000020064000000000000000000000000000000000000000000000000000000000000").unwrap()),
+        ..Message::default()
+    };
+
+    let res = executor
+        .execute_message(message, ApplyKind::Explicit, 100)
+        .unwrap();
+
+    dbg!(&res);
+
+    assert_eq!(res.msg_receipt.exit_code.value(), 0);
 }
