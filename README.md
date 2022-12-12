@@ -1,6 +1,6 @@
 # FEVM integration
 
-Contract is being reverted when `value` is ot null.
+Deploying solidity contract return invalid method error.
 
 Error 
 ```
@@ -9,17 +9,18 @@ Error
             Backtrace {
                 frames: [
                     Frame {
-                        source: 101,
-                        method: 2,
+                        source: 10,
+                        method: 3,
                         code: ExitCode {
-                            value: 33,
+                            value: 22,
                         },
-                        message: "contract reverted",
+                        message: "Invalid method",
                     },
                 ],
                 cause: None,
             },
         ),
     ),
+
 
 ```

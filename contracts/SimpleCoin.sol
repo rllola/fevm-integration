@@ -16,11 +16,11 @@ contract SimpleCoin {
                 return true;
         }
 
-        function getBalanceInEth(address addr) public view returns(uint){
+        function getBalanceInEth(address addr) public returns(uint){
                 return getBalance(addr) * 2;
         }
 
-        function getBalance(address addr) public view returns(uint) {
+        function getBalance(address addr) public payable returns(uint) {
                 return balances[addr];
         }
 }
