@@ -78,7 +78,7 @@ fn main() {
 
     let exec_return : Return = RawBytes::deserialize(&res.msg_receipt.return_data).unwrap();
 
-    println!("Calling `getbalance`");
+    println!("Calling `read_things`");
 
     let message = Message {
         from: sender[0].1,
@@ -86,10 +86,9 @@ fn main() {
         gas_limit: 1000000000,
         method_num: 2,
         sequence: 1,
-        value: TokenAmount::from_atto(1_000),
-        params: RawBytes::new(hex::decode("5864f8b2cb4f000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000020064000000000000000000000000000000000000000000000000000000000000").unwrap()),
+        params: RawBytes::new(hex::decode("586405731C4F000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000").unwrap()),
         ..Message::default()
-    };
+    };  
 
     let res = executor
         .execute_message(message, ApplyKind::Explicit, 100)
