@@ -68,7 +68,7 @@ fn main() {
     };
 
     let res = executor
-        .execute_message(message, ApplyKind::Explicit, 100)
+        .execute_message(message, ApplyKind::Implicit, 100)
         .unwrap();
 
     dbg!(&res);
